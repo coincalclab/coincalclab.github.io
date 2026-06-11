@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crypto DCA Backtester (Real Data) | CoinCalc Lab</title>
+<meta name="description" content="Backtest dollar-cost averaging on real Bitcoin, Ethereum and altcoin history. See what regular buys would be worth today, with a live chart.">
+<link rel="canonical" href="https://coincalclab.github.io/dca-backtest/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Crypto DCA Backtester (Real Data)">
+<meta property="og:description" content="Backtest dollar-cost averaging on real Bitcoin, Ethereum and altcoin history. See what regular buys would be worth today, with a live chart.">
+<meta property="og:url" content="https://coincalclab.github.io/dca-backtest/">
+<meta property="og:site_name" content="CoinCalc Lab">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪙</text></svg>">
+<style>
+:root{--bg:#0b0e14;--panel:#141925;--panel2:#1c2333;--line:#273043;
+--text:#e6e9ef;--muted:#9aa4b8;--accent:#4ade80;--accent2:#38bdf8;
+--danger:#f87171;--warn:#fbbf24;--radius:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:var(--bg);color:var(--text);line-height:1.6;font-size:16px}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:920px;margin:0 auto;padding:0 18px}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.85);
+backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px;color:var(--text)}
+.logo span{color:var(--accent)}
+nav a{margin-left:18px;color:var(--muted);font-weight:500}
+nav a:hover{color:var(--text);text-decoration:none}
+h1{font-size:30px;line-height:1.2;margin:26px 0 10px}
+h2{font-size:22px;margin:34px 0 12px}
+h3{font-size:18px;margin:22px 0 8px}
+p{color:var(--text)}
+.lead{color:var(--muted);font-size:17px;margin-top:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:22px;margin:22px 0}
+.tool{display:grid;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.row{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600;
+text-transform:uppercase;letter-spacing:.03em}
+input,select{width:100%;padding:11px 12px;background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;color:var(--text);font-size:16px;font-variant-numeric:tabular-nums}
+input:focus,select:focus{outline:none;border-color:var(--accent2)}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px;background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;color:var(--muted);font-weight:600;cursor:pointer;font-size:15px}
+.seg button.on{background:var(--accent2);border-color:var(--accent2);color:#04121f}
+.result{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+border-radius:var(--radius);padding:18px;margin-top:6px}
+.result .big{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line)}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:700;font-variant-numeric:tabular-nums}
+.pos{color:var(--accent)} .neg{color:var(--danger)}
+.muted{color:var(--muted)}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+.faq dt{font-weight:700;margin-top:16px}
+.faq dd{margin:6px 0 0;color:var(--muted)}
+.grid-tools{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.grid-tools{grid-template-columns:1fr}}
+.tcard{display:block;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:18px;transition:border-color .15s,transform .15s}
+.tcard:hover{border-color:var(--accent2);text-decoration:none;transform:translateY(-2px)}
+.tcard .t{font-weight:700;color:var(--text);font-size:17px}
+.tcard .d{color:var(--muted);font-size:14px;margin-top:4px}
+.adslot{margin:22px 0;min-height:1px}
+.cta{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);
+padding:16px;margin:22px 0}
+.cta a{display:inline-block;margin:6px 8px 0 0;padding:9px 14px;background:var(--accent);
+color:#04121f;border-radius:10px;font-weight:700}
+.cta a:hover{text-decoration:none;opacity:.9}
+.crumbs{font-size:13px;color:var(--muted);margin:18px 0 0}
+footer.site{border-top:1px solid var(--line);margin-top:50px;padding:26px 0;color:var(--muted);font-size:14px}
+footer.site a{color:var(--muted)}
+.disc{font-size:12px;color:var(--muted);margin-top:18px;line-height:1.5}
+</style>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto DCA Backtester (Real Data)", "description": "Backtest dollar-cost averaging on real Bitcoin, Ethereum and altcoin history. See what regular buys would be worth today, with a live chart.", "url": "https://coincalclab.github.io/dca-backtest/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is DCA backtesting?", "acceptedAnswer": {"@type": "Answer", "text": "Backtesting replays a strategy on real historical prices. Here it simulates buying a fixed dollar amount of a coin on a regular schedule, so you can see what that habit would be worth today instead of guessing."}}, {"@type": "Question", "name": "Where does the price data come from?", "acceptedAnswer": {"@type": "Answer", "text": "Weekly closing prices are loaded live in your browser from public exchange market data (Binance Vision). Nothing is stored on a server and there is no sign-up. History typically starts around 2017 for Bitcoin and Ethereum and later for newer coins."}}, {"@type": "Question", "name": "Does a good backtest mean future profit?", "acceptedAnswer": {"@type": "Answer", "text": "No. Crypto has had large bull runs in its history, which flatters past results. Backtests show what happened, not what will happen. Never invest more than you can afford to lose."}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://coincalclab.github.io/"}, {"@type": "ListItem", "position": 2, "name": "Crypto DCA Backtester (Real Data)"}]}</script>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="logo" href="/">Coin<span>Calc</span> Lab</a>
+<nav><a href="/">Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a></nav>
+</div></header>
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a> / <span>Crypto DCA Backtester (Real Data)</span></div>
+<h1>Crypto DCA Backtester</h1><p class="lead">See what would have happened if you had invested a fixed amount on
+a regular schedule. This runs on <strong>real weekly closing prices</strong> from public exchange data —
+pick a coin and press Run.</p>
+<script>
+function num(id){var v=parseFloat(document.getElementById(id).value);return isNaN(v)?0:v;}
+function money(x){if(!isFinite(x))return '—';var s=Math.abs(x)>=1?x.toFixed(2):x.toPrecision(4);
+return (x<0?'-$':'$')+Math.abs(parseFloat(s)).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:8});}
+function pct(x){if(!isFinite(x))return '—';return (x>=0?'+':'')+x.toFixed(2)+'%';}
+function cls(x){return x>0?'pos':(x<0?'neg':'');}
+function bind(ids,fn){ids.forEach(function(i){var e=document.getElementById(i);
+if(e){e.addEventListener('input',fn);e.addEventListener('change',fn);}});fn();}
+</script>
+
+<div class="card tool">
+  <div class="row">
+    <div><label for="bt_coin">Coin</label>
+      <select id="bt_coin">
+        <option value="BTC">Bitcoin (BTC)</option>
+        <option value="ETH">Ethereum (ETH)</option>
+        <option value="SOL">Solana (SOL)</option>
+        <option value="BNB">BNB</option>
+        <option value="XRP">XRP</option>
+        <option value="ADA">Cardano (ADA)</option>
+        <option value="DOGE">Dogecoin (DOGE)</option>
+      </select>
+    </div>
+    <div><label for="bt_amt">Amount per buy ($)</label><input id="bt_amt" type="number" value="50" step="any"></div>
+  </div>
+  <div class="row">
+    <div><label for="bt_freq">How often</label>
+      <select id="bt_freq">
+        <option value="1">Every week</option>
+        <option value="2">Every 2 weeks</option>
+        <option value="4" selected>Every month</option>
+      </select>
+    </div>
+    <div><label for="bt_start">Start from</label>
+      <select id="bt_start">
+        <option value="all">All available history</option>
+        <option value="2018">2018</option>
+        <option value="2019">2019</option>
+        <option value="2020">2020</option>
+        <option value="2021" selected>2021</option>
+        <option value="2022">2022</option>
+        <option value="2023">2023</option>
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+      </select>
+    </div>
+  </div>
+  <div><button type="button" id="bt_run" class="seg"><span style="flex:1;padding:10px;font-weight:700">▶ Run backtest</span></button></div>
+  <div class="note" id="bt_status">Ready.</div>
+  <div id="bt_results" style="display:none">
+    <div class="result">
+      <div class="kv"><span class="k">Total invested</span><span class="v" id="bt_invested">—</span></div>
+      <div class="kv"><span class="k">Value today</span><span class="v" id="bt_value">—</span></div>
+      <div class="kv"><span class="k">Profit / loss</span><span class="v" id="bt_profit">—</span></div>
+      <div class="kv"><span class="k">Number of buys</span><span class="v" id="bt_buys">—</span></div>
+      <div class="kv"><span class="k">Coins accumulated</span><span class="v" id="bt_coins">—</span></div>
+      <div class="kv"><span class="k">Average buy price</span><span class="v" id="bt_avg">—</span></div>
+      <div class="kv"><span class="k">If invested as lump sum at start</span><span class="v" id="bt_lump">—</span></div>
+    </div>
+    <canvas id="bt_chart" style="width:100%;height:220px;display:block;margin-top:12px"></canvas>
+    <div class="note"><span style="color:#9aa4b8">●</span> Total invested &nbsp;
+      <span style="color:#4ade80">●</span> Portfolio value</div>
+  </div>
+  <p class="note">Data: weekly closing prices from public market data (Binance Vision). History begins
+  around 2017–2020 depending on the coin. Past performance does not predict future results.</p>
+</div>
+<script>
+var BT_SYM={BTC:'BTCUSDT',ETH:'ETHUSDT',SOL:'SOLUSDT',BNB:'BNBUSDT',XRP:'XRPUSDT',ADA:'ADAUSDT',DOGE:'DOGEUSDT'};
+var BT_cache={},BT_lastSeries=null;
+function btSet(id,v){document.getElementById(id).textContent=v;}
+function btColored(id,v,n){var e=document.getElementById(id);e.textContent=v;e.className='v '+cls(n);}
+function btFetch(sym){
+  if(BT_cache[sym])return Promise.resolve(BT_cache[sym]);
+  var url='https://data-api.binance.vision/api/v3/klines?symbol='+sym+'&interval=1w&limit=1000';
+  return fetch(url).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(function(raw){
+      var data=raw.map(function(k){return {t:k[6],close:parseFloat(k[4])};});
+      BT_cache[sym]=data;return data;
+    });
+}
+function runBT(){
+  var status=document.getElementById('bt_status');
+  var coin=document.getElementById('bt_coin').value;
+  var amt=num('bt_amt');
+  var freq=parseInt(document.getElementById('bt_freq').value,10);
+  var startYear=document.getElementById('bt_start').value;
+  if(amt<=0){status.textContent='Enter an amount greater than 0.';return;}
+  status.textContent='Loading market data…';
+  btFetch(BT_SYM[coin]).then(function(data){
+    var pts=data;
+    if(startYear!=='all'){var y=parseInt(startYear,10);
+      pts=data.filter(function(d){return new Date(d.t).getFullYear()>=y;});}
+    if(pts.length<2){status.textContent='Not enough data for that range — try an earlier start year.';return;}
+    var invested=0,coins=0,buys=0,series=[];
+    for(var i=0;i<pts.length;i++){
+      if(i%freq===0){invested+=amt;coins+=amt/pts[i].close;buys++;}
+      series.push({invested:invested,value:coins*pts[i].close});
+    }
+    var last=pts[pts.length-1].close;
+    var finalValue=coins*last, profit=finalValue-invested, roi=invested>0?profit/invested*100:0;
+    var avg=coins>0?invested/coins:0;
+    var lumpValue=(invested/pts[0].close)*last;
+    btSet('bt_invested',money(invested));
+    btSet('bt_value',money(finalValue));
+    btColored('bt_profit',money(profit)+' ('+pct(roi)+')',profit);
+    btSet('bt_buys',String(buys));
+    btSet('bt_coins',coins.toLocaleString(undefined,{maximumFractionDigits:8})+' '+coin);
+    btSet('bt_avg',money(avg));
+    btSet('bt_lump',money(lumpValue));
+    document.getElementById('bt_results').style.display='';
+    var d0=new Date(pts[0].t).toISOString().slice(0,10);
+    status.textContent=coin+' · '+buys+' buys since '+d0+' · live data';
+    BT_lastSeries=series;drawBT(series);
+  }).catch(function(e){
+    status.textContent='Could not load data ('+e.message+'). Check your connection and press Run again.';
+  });
+}
+function drawBT(series){
+  var c=document.getElementById('bt_chart');if(!c)return;
+  var dpr=window.devicePixelRatio||1,w=c.clientWidth||600,h=220;
+  c.width=w*dpr;c.height=h*dpr;var ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  var pad={l:6,r:6,t:10,b:8},n=series.length;
+  var maxY=0;series.forEach(function(s){maxY=Math.max(maxY,s.invested,s.value);});
+  if(maxY<=0)return;
+  function X(i){return pad.l+(w-pad.l-pad.r)*(n>1?i/(n-1):0);}
+  function Y(v){return h-pad.b-(h-pad.t-pad.b)*(v/maxY);}
+  function drawLine(key,color){ctx.beginPath();series.forEach(function(s,i){
+    var px=X(i),py=Y(s[key]);if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py);});
+    ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();}
+  drawLine('invested','#9aa4b8');
+  var up=series[n-1].value>=series[n-1].invested;
+  drawLine('value',up?'#4ade80':'#f87171');
+}
+document.getElementById('bt_run').addEventListener('click',runBT);
+['bt_coin','bt_amt','bt_freq','bt_start'].forEach(function(id){
+  document.getElementById(id).addEventListener('change',runBT);});
+window.addEventListener('resize',function(){if(BT_lastSeries)drawBT(BT_lastSeries);});
+runBT();
+</script>
+<h2>Frequently asked questions</h2><dl class="faq"><dt>What is DCA backtesting?</dt><dd>Backtesting replays a strategy on real historical prices. Here it simulates buying a fixed dollar amount of a coin on a regular schedule, so you can see what that habit would be worth today instead of guessing.</dd><dt>Where does the price data come from?</dt><dd>Weekly closing prices are loaded live in your browser from public exchange market data (Binance Vision). Nothing is stored on a server and there is no sign-up. History typically starts around 2017 for Bitcoin and Ethereum and later for newer coins.</dd><dt>Does a good backtest mean future profit?</dt><dd>No. Crypto has had large bull runs in its history, which flatters past results. Backtests show what happened, not what will happen. Never invest more than you can afford to lose.</dd></dl><h2>Related calculators</h2><div class="grid-tools"><a class="tcard" href="/dca-calculator/"><div class="t">DCA Calculator (Dollar-Cost Averaging)</div><div class="d">Dollar-cost averaging calculator. Add each crypto buy to get your average entry price, tot…</div></a><a class="tcard" href="/compound-interest-calculator/"><div class="t">Crypto Compound Interest &amp; Staking Calculator</div><div class="d">Compound interest calculator for crypto staking and savings. Project your earnings from AP…</div></a><a class="tcard" href="/crypto-profit-calculator/"><div class="t">Crypto Profit Calculator</div><div class="d">Free crypto profit calculator. Enter buy price, sell price and fees to instantly see your …</div></a></div><h2>Related guides</h2><div class="grid-tools"><a class="tcard" href="/guides/dca-vs-lump-sum-crypto/"><div class="t">DCA vs Lump Sum Investing in Crypto: Which Is Better?</div><div class="d">Dollar-cost averaging versus lump-sum investing in crypto — the maths, the psychology, wha…</div></a></div>
+</main>
+<footer class="site"><div class="wrap">
+<p>CoinCalc Lab — Free, accurate crypto calculators for traders.</p>
+<p class="disc">Educational tools only. Nothing here is financial advice. Crypto trading carries
+substantial risk of loss. Figures are estimates; always verify against your exchange before trading.</p>
+<p><a href="/about/">About</a> · <a href="/guides/">Guides</a> · <a href="/sitemap.xml">Sitemap</a></p>
+</div></footer>
+</body>
+</html>

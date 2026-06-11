@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Position Sizing for Crypto: The 1% Risk Rule Explained | CoinCalc Lab</title>
+<meta name="description" content="The 1% rule keeps any single crypto trade from blowing up your account. Learn the formula, see a worked example, and size every trade with controlled risk.">
+<link rel="canonical" href="https://coincalclab.github.io/guides/position-sizing-1-percent-rule/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Position Sizing for Crypto: The 1% Risk Rule Explained">
+<meta property="og:description" content="The 1% rule keeps any single crypto trade from blowing up your account. Learn the formula, see a worked example, and size every trade with controlled risk.">
+<meta property="og:url" content="https://coincalclab.github.io/guides/position-sizing-1-percent-rule/">
+<meta property="og:site_name" content="CoinCalc Lab">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪙</text></svg>">
+<style>
+:root{--bg:#0b0e14;--panel:#141925;--panel2:#1c2333;--line:#273043;
+--text:#e6e9ef;--muted:#9aa4b8;--accent:#4ade80;--accent2:#38bdf8;
+--danger:#f87171;--warn:#fbbf24;--radius:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:var(--bg);color:var(--text);line-height:1.6;font-size:16px}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:920px;margin:0 auto;padding:0 18px}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.85);
+backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px;color:var(--text)}
+.logo span{color:var(--accent)}
+nav a{margin-left:18px;color:var(--muted);font-weight:500}
+nav a:hover{color:var(--text);text-decoration:none}
+h1{font-size:30px;line-height:1.2;margin:26px 0 10px}
+h2{font-size:22px;margin:34px 0 12px}
+h3{font-size:18px;margin:22px 0 8px}
+p{color:var(--text)}
+.lead{color:var(--muted);font-size:17px;margin-top:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:22px;margin:22px 0}
+.tool{display:grid;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.row{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600;
+text-transform:uppercase;letter-spacing:.03em}
+input,select{width:100%;padding:11px 12px;background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;color:var(--text);font-size:16px;font-variant-numeric:tabular-nums}
+input:focus,select:focus{outline:none;border-color:var(--accent2)}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px;background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;color:var(--muted);font-weight:600;cursor:pointer;font-size:15px}
+.seg button.on{background:var(--accent2);border-color:var(--accent2);color:#04121f}
+.result{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+border-radius:var(--radius);padding:18px;margin-top:6px}
+.result .big{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line)}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:700;font-variant-numeric:tabular-nums}
+.pos{color:var(--accent)} .neg{color:var(--danger)}
+.muted{color:var(--muted)}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+.faq dt{font-weight:700;margin-top:16px}
+.faq dd{margin:6px 0 0;color:var(--muted)}
+.grid-tools{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.grid-tools{grid-template-columns:1fr}}
+.tcard{display:block;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:18px;transition:border-color .15s,transform .15s}
+.tcard:hover{border-color:var(--accent2);text-decoration:none;transform:translateY(-2px)}
+.tcard .t{font-weight:700;color:var(--text);font-size:17px}
+.tcard .d{color:var(--muted);font-size:14px;margin-top:4px}
+.adslot{margin:22px 0;min-height:1px}
+.cta{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);
+padding:16px;margin:22px 0}
+.cta a{display:inline-block;margin:6px 8px 0 0;padding:9px 14px;background:var(--accent);
+color:#04121f;border-radius:10px;font-weight:700}
+.cta a:hover{text-decoration:none;opacity:.9}
+.crumbs{font-size:13px;color:var(--muted);margin:18px 0 0}
+footer.site{border-top:1px solid var(--line);margin-top:50px;padding:26px 0;color:var(--muted);font-size:14px}
+footer.site a{color:var(--muted)}
+.disc{font-size:12px;color:var(--muted);margin-top:18px;line-height:1.5}
+</style>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Position Sizing for Crypto: The 1% Risk Rule Explained", "description": "The 1% rule keeps any single crypto trade from blowing up your account. Learn the formula, see a worked example, and size every trade with controlled risk.", "datePublished": "2026-06-10", "dateModified": "2026-06-10", "author": {"@type": "Organization", "name": "CoinCalc Lab"}, "publisher": {"@type": "Organization", "name": "CoinCalc Lab"}, "mainEntityOfPage": "https://coincalclab.github.io/guides/position-sizing-1-percent-rule/", "inLanguage": "en"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://coincalclab.github.io/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://coincalclab.github.io/guides/"}, {"@type": "ListItem", "position": 3, "name": "Position Sizing for Crypto: The 1% Risk Rule Explained"}]}</script>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="logo" href="/">Coin<span>Calc</span> Lab</a>
+<nav><a href="/">Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a></nav>
+</div></header>
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a> / <a href="/guides/">Guides</a> / <span>Position Sizing for Crypto: The 1% Risk Rule Explained</span></div>
+<h1>Position Sizing: The 1% Risk Rule</h1>
+<p class="lead">Most traders obsess over entries and exits, but the thing that actually keeps you in the
+game is <strong>position sizing</strong> — how much you put on each trade. The 1% rule is the simplest,
+most robust way to get it right.</p>
+
+<h2>What the 1% rule is</h2>
+<p>The rule: never risk more than <strong>1% of your account</strong> on a single trade. "Risk" means the
+amount you lose if your stop-loss is hit — not the size of the position. With a 1% risk budget you could
+lose 20 trades in a row and still keep about 82% of your capital. That survivability is the whole point:
+you cannot win long term if a bad streak wipes you out.</p>
+
+<h2>The formula</h2>
+<p>Position size depends on three things — your account size, your risk percentage, and the distance from
+entry to stop-loss:</p>
+<p><strong>Position size = (account × risk %) ÷ (distance from entry to stop)</strong></p>
+<p>This makes every loss the same fixed dollar amount, whether your stop is tight or wide. A wider stop
+simply means a smaller position; a tighter stop allows a larger one. Risk stays constant.</p>
+
+<h2>A worked example</h2>
+<p>Account: $1,000. Risk per trade: 1% = $10. You enter at $30,000 with a stop at $29,000, so your risk
+per coin is $1,000. Position size = $10 ÷ $1,000 = <strong>0.01 coins</strong>, a position worth $300. If
+the stop is hit you lose exactly $10 — your planned 1% — no more.</p>
+<p>Our <a href="/position-size-calculator/">position size calculator</a> does this instantly, and also
+shows the leverage a position would require, which is a useful warning when a stop is too tight for your
+account.</p>
+
+<h2>How it connects to leverage and liquidation</h2>
+<p>Position sizing and leverage are two sides of the same coin. Size by risk first; if the resulting
+position needs heavy leverage to open, that is a signal your stop is too close or your account too small
+for that trade. And always make sure your stop sits well before your
+<a href="/futures-liquidation-calculator/">liquidation price</a> — otherwise the exchange closes the
+trade for you, on its terms, not yours. The <a href="/leverage-pnl-calculator/">leverage PnL
+calculator</a> shows how a sized position performs at different leverage levels.</p>
+
+<h2>Common mistakes</h2>
+<ul>
+<li><strong>Risking a percentage of the position instead of the account.</strong> The rule is 1% of your
+whole account.</li>
+<li><strong>Moving the stop to fit a bigger position.</strong> Set the stop where your idea is wrong, then
+size to it — never the other way around.</li>
+<li><strong>Ignoring fees and slippage.</strong> On volatile coins, real losses can exceed the theoretical
+stop. Leave a small buffer.</li>
+</ul>
+
+<h2>The bottom line</h2>
+<p>Good position sizing is boring, and that is its strength. Fix your risk per trade, size every position
+to it, and you turn a string of losses into a survivable dip instead of a blow-up. This is education, not
+financial advice — trade carefully and within your means.</p>
+<h2>Related calculators</h2><div class="grid-tools"><a class="tcard" href="/position-size-calculator/"><div class="t">Position Size Calculator</div><div class="d">Calculate the right crypto position size from your account balance, risk percentage and st…</div></a><a class="tcard" href="/futures-liquidation-calculator/"><div class="t">Futures Liquidation Price Calculator</div><div class="d">Estimate the liquidation price of a leveraged crypto futures position. Supports long and s…</div></a><a class="tcard" href="/leverage-pnl-calculator/"><div class="t">Leverage PnL Calculator</div><div class="d">Leverage trading PnL calculator. See profit, loss and return on margin for a leveraged lon…</div></a></div>
+</main>
+<footer class="site"><div class="wrap">
+<p>CoinCalc Lab — Free, accurate crypto calculators for traders.</p>
+<p class="disc">Educational tools only. Nothing here is financial advice. Crypto trading carries
+substantial risk of loss. Figures are estimates; always verify against your exchange before trading.</p>
+<p><a href="/about/">About</a> · <a href="/guides/">Guides</a> · <a href="/sitemap.xml">Sitemap</a></p>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DCA Calculator (Dollar-Cost Averaging) | CoinCalc Lab</title>
+<meta name="description" content="Dollar-cost averaging calculator. Add each crypto buy to get your average entry price, total coins, total invested and current profit or loss.">
+<link rel="canonical" href="https://coincalclab.github.io/dca-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DCA Calculator (Dollar-Cost Averaging)">
+<meta property="og:description" content="Dollar-cost averaging calculator. Add each crypto buy to get your average entry price, total coins, total invested and current profit or loss.">
+<meta property="og:url" content="https://coincalclab.github.io/dca-calculator/">
+<meta property="og:site_name" content="CoinCalc Lab">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪙</text></svg>">
+<style>
+:root{--bg:#0b0e14;--panel:#141925;--panel2:#1c2333;--line:#273043;
+--text:#e6e9ef;--muted:#9aa4b8;--accent:#4ade80;--accent2:#38bdf8;
+--danger:#f87171;--warn:#fbbf24;--radius:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:var(--bg);color:var(--text);line-height:1.6;font-size:16px}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:920px;margin:0 auto;padding:0 18px}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.85);
+backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px;color:var(--text)}
+.logo span{color:var(--accent)}
+nav a{margin-left:18px;color:var(--muted);font-weight:500}
+nav a:hover{color:var(--text);text-decoration:none}
+h1{font-size:30px;line-height:1.2;margin:26px 0 10px}
+h2{font-size:22px;margin:34px 0 12px}
+h3{font-size:18px;margin:22px 0 8px}
+p{color:var(--text)}
+.lead{color:var(--muted);font-size:17px;margin-top:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:22px;margin:22px 0}
+.tool{display:grid;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.row{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600;
+text-transform:uppercase;letter-spacing:.03em}
+input,select{width:100%;padding:11px 12px;background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;color:var(--text);font-size:16px;font-variant-numeric:tabular-nums}
+input:focus,select:focus{outline:none;border-color:var(--accent2)}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px;background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;color:var(--muted);font-weight:600;cursor:pointer;font-size:15px}
+.seg button.on{background:var(--accent2);border-color:var(--accent2);color:#04121f}
+.result{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+border-radius:var(--radius);padding:18px;margin-top:6px}
+.result .big{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line)}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:700;font-variant-numeric:tabular-nums}
+.pos{color:var(--accent)} .neg{color:var(--danger)}
+.muted{color:var(--muted)}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+.faq dt{font-weight:700;margin-top:16px}
+.faq dd{margin:6px 0 0;color:var(--muted)}
+.grid-tools{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.grid-tools{grid-template-columns:1fr}}
+.tcard{display:block;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:18px;transition:border-color .15s,transform .15s}
+.tcard:hover{border-color:var(--accent2);text-decoration:none;transform:translateY(-2px)}
+.tcard .t{font-weight:700;color:var(--text);font-size:17px}
+.tcard .d{color:var(--muted);font-size:14px;margin-top:4px}
+.adslot{margin:22px 0;min-height:1px}
+.cta{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);
+padding:16px;margin:22px 0}
+.cta a{display:inline-block;margin:6px 8px 0 0;padding:9px 14px;background:var(--accent);
+color:#04121f;border-radius:10px;font-weight:700}
+.cta a:hover{text-decoration:none;opacity:.9}
+.crumbs{font-size:13px;color:var(--muted);margin:18px 0 0}
+footer.site{border-top:1px solid var(--line);margin-top:50px;padding:26px 0;color:var(--muted);font-size:14px}
+footer.site a{color:var(--muted)}
+.disc{font-size:12px;color:var(--muted);margin-top:18px;line-height:1.5}
+</style>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "DCA Calculator (Dollar-Cost Averaging)", "description": "Dollar-cost averaging calculator. Add each crypto buy to get your average entry price, total coins, total invested and current profit or loss.", "url": "https://coincalclab.github.io/dca-calculator/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is dollar-cost averaging (DCA)?", "acceptedAnswer": {"@type": "Answer", "text": "DCA means buying a fixed dollar amount at regular intervals regardless of price. It smooths out your entry over time, so you buy more coins when prices are low and fewer when high, removing the pressure of timing the market."}}, {"@type": "Question", "name": "How is my average price calculated?", "acceptedAnswer": {"@type": "Answer", "text": "Average price = total dollars invested ÷ total coins bought. Each buy adds its dollars to the total and amount÷price coins to your stack; the calculator divides the two."}}, {"@type": "Question", "name": "Does DCA guarantee a profit?", "acceptedAnswer": {"@type": "Answer", "text": "No. DCA reduces timing risk but you still profit only if the asset's price ends up above your average entry. It is a discipline for managing volatility, not a guarantee of returns."}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://coincalclab.github.io/"}, {"@type": "ListItem", "position": 2, "name": "DCA Calculator (Dollar-Cost Averaging)"}]}</script>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="logo" href="/">Coin<span>Calc</span> Lab</a>
+<nav><a href="/">Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a></nav>
+</div></header>
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a> / <span>DCA Calculator (Dollar-Cost Averaging)</span></div>
+<h1>DCA Calculator — Dollar-Cost Averaging</h1><p class="lead">Enter each of your buys to see your true average entry price,
+how many coins you hold, and your profit or loss at today's price. Empty rows are ignored.</p>
+<script>
+function num(id){var v=parseFloat(document.getElementById(id).value);return isNaN(v)?0:v;}
+function money(x){if(!isFinite(x))return '—';var s=Math.abs(x)>=1?x.toFixed(2):x.toPrecision(4);
+return (x<0?'-$':'$')+Math.abs(parseFloat(s)).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:8});}
+function pct(x){if(!isFinite(x))return '—';return (x>=0?'+':'')+x.toFixed(2)+'%';}
+function cls(x){return x>0?'pos':(x<0?'neg':'');}
+function bind(ids,fn){ids.forEach(function(i){var e=document.getElementById(i);
+if(e){e.addEventListener('input',fn);e.addEventListener('change',fn);}});fn();}
+</script>
+
+<div class="card tool">
+  <div id="d_rows">
+    <div class="row d_row">
+      <div><label>Buy amount ($)</label><input class="d_amt" type="number" value="100" step="any"></div>
+      <div><label>Buy price ($)</label><input class="d_prc" type="number" value="20000" step="any"></div>
+    </div>
+    <div class="row d_row">
+      <div><label>Buy amount ($)</label><input class="d_amt" type="number" value="100" step="any"></div>
+      <div><label>Buy price ($)</label><input class="d_prc" type="number" value="30000" step="any"></div>
+    </div>
+    <div class="row d_row">
+      <div><label>Buy amount ($)</label><input class="d_amt" type="number" value="100" step="any"></div>
+      <div><label>Buy price ($)</label><input class="d_prc" type="number" value="40000" step="any"></div>
+    </div>
+  </div>
+  <div><button type="button" id="d_add" class="seg" style="margin-top:4px"><span style="flex:1;padding:8px">+ Add another buy</span></button></div>
+  <div class="row" style="margin-top:8px">
+    <div><label>Current price ($)</label><input id="d_cur" type="number" value="35000" step="any"></div>
+    <div></div>
+  </div>
+  <div class="result">
+    <div class="kv"><span class="k">Average entry price</span><span class="v" id="d_avg">—</span></div>
+    <div class="kv"><span class="k">Total invested</span><span class="v" id="d_inv">—</span></div>
+    <div class="kv"><span class="k">Total coins</span><span class="v" id="d_coins">—</span></div>
+    <div class="kv"><span class="k">Current value</span><span class="v" id="d_val">—</span></div>
+    <div class="kv"><span class="k">Profit / loss</span><span class="v" id="d_pl">—</span></div>
+  </div>
+</div>
+<script>
+function calcDCA(){
+  var amts=document.querySelectorAll('.d_amt'),prcs=document.querySelectorAll('.d_prc');
+  var inv=0,coins=0;
+  for(var i=0;i<amts.length;i++){
+    var a=parseFloat(amts[i].value),p=parseFloat(prcs[i].value);
+    if(!isNaN(a)&&!isNaN(p)&&a>0&&p>0){inv+=a;coins+=a/p;}
+  }
+  var cur=num('d_cur');
+  var avg=coins>0?inv/coins:0;
+  var val=coins*cur;
+  var pl=val-inv;
+  document.getElementById('d_avg').textContent=money(avg);
+  document.getElementById('d_inv').textContent=money(inv);
+  document.getElementById('d_coins').textContent=coins.toLocaleString(undefined,{maximumFractionDigits:8});
+  document.getElementById('d_val').textContent=money(val);
+  var plEl=document.getElementById('d_pl');
+  plEl.textContent=money(pl)+' ('+pct(inv>0?pl/inv*100:0)+')';plEl.className='v '+cls(pl);
+}
+document.getElementById('d_add').addEventListener('click',function(){
+  var r=document.createElement('div');r.className='row d_row';
+  r.innerHTML='<div><label>Buy amount ($)</label><input class="d_amt" type="number" step="any"></div>'+
+              '<div><label>Buy price ($)</label><input class="d_prc" type="number" step="any"></div>';
+  document.getElementById('d_rows').appendChild(r);
+  r.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calcDCA);});
+  calcDCA();
+});
+document.querySelectorAll('.d_amt,.d_prc').forEach(function(e){e.addEventListener('input',calcDCA);});
+bind(['d_cur'],calcDCA);
+</script>
+<h2>Frequently asked questions</h2><dl class="faq"><dt>What is dollar-cost averaging (DCA)?</dt><dd>DCA means buying a fixed dollar amount at regular intervals regardless of price. It smooths out your entry over time, so you buy more coins when prices are low and fewer when high, removing the pressure of timing the market.</dd><dt>How is my average price calculated?</dt><dd>Average price = total dollars invested ÷ total coins bought. Each buy adds its dollars to the total and amount÷price coins to your stack; the calculator divides the two.</dd><dt>Does DCA guarantee a profit?</dt><dd>No. DCA reduces timing risk but you still profit only if the asset's price ends up above your average entry. It is a discipline for managing volatility, not a guarantee of returns.</dd></dl><h2>Related calculators</h2><div class="grid-tools"><a class="tcard" href="/average-down-calculator/"><div class="t">Average Down Calculator</div><div class="d">Average down calculator for crypto and stocks. See your new average entry price and break-…</div></a><a class="tcard" href="/crypto-profit-calculator/"><div class="t">Crypto Profit Calculator</div><div class="d">Free crypto profit calculator. Enter buy price, sell price and fees to instantly see your …</div></a><a class="tcard" href="/compound-interest-calculator/"><div class="t">Crypto Compound Interest &amp; Staking Calculator</div><div class="d">Compound interest calculator for crypto staking and savings. Project your earnings from AP…</div></a></div><h2>Related guides</h2><div class="grid-tools"><a class="tcard" href="/guides/dca-vs-lump-sum-crypto/"><div class="t">DCA vs Lump Sum Investing in Crypto: Which Is Better?</div><div class="d">Dollar-cost averaging versus lump-sum investing in crypto — the maths, the psychology, wha…</div></a></div>
+</main>
+<footer class="site"><div class="wrap">
+<p>CoinCalc Lab — Free, accurate crypto calculators for traders.</p>
+<p class="disc">Educational tools only. Nothing here is financial advice. Crypto trading carries
+substantial risk of loss. Figures are estimates; always verify against your exchange before trading.</p>
+<p><a href="/about/">About</a> · <a href="/guides/">Guides</a> · <a href="/sitemap.xml">Sitemap</a></p>
+</div></footer>
+</body>
+</html>

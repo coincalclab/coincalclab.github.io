@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Position Size Calculator | CoinCalc Lab</title>
+<meta name="description" content="Calculate the right crypto position size from your account balance, risk percentage and stop-loss. Trade with consistent, controlled risk.">
+<link rel="canonical" href="https://coincalclab.github.io/position-size-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Position Size Calculator">
+<meta property="og:description" content="Calculate the right crypto position size from your account balance, risk percentage and stop-loss. Trade with consistent, controlled risk.">
+<meta property="og:url" content="https://coincalclab.github.io/position-size-calculator/">
+<meta property="og:site_name" content="CoinCalc Lab">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪙</text></svg>">
+<style>
+:root{--bg:#0b0e14;--panel:#141925;--panel2:#1c2333;--line:#273043;
+--text:#e6e9ef;--muted:#9aa4b8;--accent:#4ade80;--accent2:#38bdf8;
+--danger:#f87171;--warn:#fbbf24;--radius:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:var(--bg);color:var(--text);line-height:1.6;font-size:16px}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:920px;margin:0 auto;padding:0 18px}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.85);
+backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px;color:var(--text)}
+.logo span{color:var(--accent)}
+nav a{margin-left:18px;color:var(--muted);font-weight:500}
+nav a:hover{color:var(--text);text-decoration:none}
+h1{font-size:30px;line-height:1.2;margin:26px 0 10px}
+h2{font-size:22px;margin:34px 0 12px}
+h3{font-size:18px;margin:22px 0 8px}
+p{color:var(--text)}
+.lead{color:var(--muted);font-size:17px;margin-top:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:22px;margin:22px 0}
+.tool{display:grid;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.row{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600;
+text-transform:uppercase;letter-spacing:.03em}
+input,select{width:100%;padding:11px 12px;background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;color:var(--text);font-size:16px;font-variant-numeric:tabular-nums}
+input:focus,select:focus{outline:none;border-color:var(--accent2)}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px;background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;color:var(--muted);font-weight:600;cursor:pointer;font-size:15px}
+.seg button.on{background:var(--accent2);border-color:var(--accent2);color:#04121f}
+.result{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+border-radius:var(--radius);padding:18px;margin-top:6px}
+.result .big{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line)}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:700;font-variant-numeric:tabular-nums}
+.pos{color:var(--accent)} .neg{color:var(--danger)}
+.muted{color:var(--muted)}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+.faq dt{font-weight:700;margin-top:16px}
+.faq dd{margin:6px 0 0;color:var(--muted)}
+.grid-tools{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.grid-tools{grid-template-columns:1fr}}
+.tcard{display:block;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:18px;transition:border-color .15s,transform .15s}
+.tcard:hover{border-color:var(--accent2);text-decoration:none;transform:translateY(-2px)}
+.tcard .t{font-weight:700;color:var(--text);font-size:17px}
+.tcard .d{color:var(--muted);font-size:14px;margin-top:4px}
+.adslot{margin:22px 0;min-height:1px}
+.cta{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);
+padding:16px;margin:22px 0}
+.cta a{display:inline-block;margin:6px 8px 0 0;padding:9px 14px;background:var(--accent);
+color:#04121f;border-radius:10px;font-weight:700}
+.cta a:hover{text-decoration:none;opacity:.9}
+.crumbs{font-size:13px;color:var(--muted);margin:18px 0 0}
+footer.site{border-top:1px solid var(--line);margin-top:50px;padding:26px 0;color:var(--muted);font-size:14px}
+footer.site a{color:var(--muted)}
+.disc{font-size:12px;color:var(--muted);margin-top:18px;line-height:1.5}
+</style>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Position Size Calculator", "description": "Calculate the right crypto position size from your account balance, risk percentage and stop-loss. Trade with consistent, controlled risk.", "url": "https://coincalclab.github.io/position-size-calculator/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How much should I risk per trade?", "acceptedAnswer": {"@type": "Answer", "text": "Most professional traders risk 0.5%–2% of their account on any single trade. At 1%, you could lose 20 trades in a row and still keep about 80% of your capital, which keeps you in the game."}}, {"@type": "Question", "name": "How is position size calculated?", "acceptedAnswer": {"@type": "Answer", "text": "Position size = (account balance × risk %) ÷ (distance from entry to stop-loss). This makes every loss equal to the same fixed amount, no matter how wide or tight your stop is."}}, {"@type": "Question", "name": "What does 'leverage needed' mean?", "acceptedAnswer": {"@type": "Answer", "text": "If the position value is larger than your balance, you would need leverage above 1× to open it. A high figure here is a warning that your stop may be too tight for your account size."}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://coincalclab.github.io/"}, {"@type": "ListItem", "position": 2, "name": "Position Size Calculator"}]}</script>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="logo" href="/">Coin<span>Calc</span> Lab</a>
+<nav><a href="/">Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a></nav>
+</div></header>
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a> / <span>Position Size Calculator</span></div>
+<h1>Position Size Calculator</h1><p class="lead">Size every trade so a stop-loss only ever costs you a fixed,
+chosen percentage of your account. This is the single most important habit for surviving as a trader.</p>
+<script>
+function num(id){var v=parseFloat(document.getElementById(id).value);return isNaN(v)?0:v;}
+function money(x){if(!isFinite(x))return '—';var s=Math.abs(x)>=1?x.toFixed(2):x.toPrecision(4);
+return (x<0?'-$':'$')+Math.abs(parseFloat(s)).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:8});}
+function pct(x){if(!isFinite(x))return '—';return (x>=0?'+':'')+x.toFixed(2)+'%';}
+function cls(x){return x>0?'pos':(x<0?'neg':'');}
+function bind(ids,fn){ids.forEach(function(i){var e=document.getElementById(i);
+if(e){e.addEventListener('input',fn);e.addEventListener('change',fn);}});fn();}
+</script>
+
+<div class="card tool">
+  <div class="row">
+    <div><label for="s_bal">Account balance ($)</label><input id="s_bal" type="number" value="1000" step="any"></div>
+    <div><label for="s_risk">Risk per trade (%)</label><input id="s_risk" type="number" value="1" step="any"></div>
+  </div>
+  <div class="row">
+    <div><label for="s_entry">Entry price ($)</label><input id="s_entry" type="number" value="30000" step="any"></div>
+    <div><label for="s_stop">Stop-loss price ($)</label><input id="s_stop" type="number" value="29000" step="any"></div>
+  </div>
+  <div class="result">
+    <div class="kv"><span class="k">Amount at risk</span><span class="v" id="s_riskamt">—</span></div>
+    <div class="kv"><span class="k">Position size (coins)</span><span class="v" id="s_units">—</span></div>
+    <div class="kv"><span class="k">Position value</span><span class="v" id="s_value">—</span></div>
+    <div class="kv"><span class="k">Stop distance</span><span class="v" id="s_stopdist">—</span></div>
+    <div class="kv"><span class="k">Leverage needed</span><span class="v" id="s_lev">—</span></div>
+  </div>
+  <p class="note">Works for longs and shorts — just put your stop on the correct side of entry.</p>
+</div>
+<script>
+function calcPos(){
+  var bal=num('s_bal'),risk=num('s_risk')/100,entry=num('s_entry'),stop=num('s_stop');
+  if(bal<=0||entry<=0||stop<=0||entry===stop){return;}
+  var riskAmt=bal*risk;
+  var perUnit=Math.abs(entry-stop);
+  var units=riskAmt/perUnit;
+  var value=units*entry;
+  var lev=value/bal;
+  document.getElementById('s_riskamt').textContent=money(riskAmt);
+  document.getElementById('s_units').textContent=units.toLocaleString(undefined,{maximumFractionDigits:8});
+  document.getElementById('s_value').textContent=money(value);
+  var sd=document.getElementById('s_stopdist');
+  sd.textContent=(perUnit/entry*100).toFixed(2)+'%';
+  var le=document.getElementById('s_lev');
+  le.textContent=lev.toFixed(2)+'x';
+  le.className='v '+(lev>1?'neg':'');
+}
+bind(['s_bal','s_risk','s_entry','s_stop'],calcPos);
+</script>
+<h2>Frequently asked questions</h2><dl class="faq"><dt>How much should I risk per trade?</dt><dd>Most professional traders risk 0.5%–2% of their account on any single trade. At 1%, you could lose 20 trades in a row and still keep about 80% of your capital, which keeps you in the game.</dd><dt>How is position size calculated?</dt><dd>Position size = (account balance × risk %) ÷ (distance from entry to stop-loss). This makes every loss equal to the same fixed amount, no matter how wide or tight your stop is.</dd><dt>What does &#x27;leverage needed&#x27; mean?</dt><dd>If the position value is larger than your balance, you would need leverage above 1× to open it. A high figure here is a warning that your stop may be too tight for your account size.</dd></dl><h2>Related calculators</h2><div class="grid-tools"><a class="tcard" href="/futures-liquidation-calculator/"><div class="t">Futures Liquidation Price Calculator</div><div class="d">Estimate the liquidation price of a leveraged crypto futures position. Supports long and s…</div></a><a class="tcard" href="/crypto-profit-calculator/"><div class="t">Crypto Profit Calculator</div><div class="d">Free crypto profit calculator. Enter buy price, sell price and fees to instantly see your …</div></a></div><h2>Related guides</h2><div class="grid-tools"><a class="tcard" href="/guides/crypto-liquidation-explained/"><div class="t">Crypto Liquidation Explained: How It Works and How to Avoid It</div><div class="d">A clear guide to crypto liquidation: what it is, how the liquidation price is calculated, …</div></a><a class="tcard" href="/guides/position-sizing-1-percent-rule/"><div class="t">Position Sizing for Crypto: The 1% Risk Rule Explained</div><div class="d">The 1% rule keeps any single crypto trade from blowing up your account. Learn the formula,…</div></a><a class="tcard" href="/guides/risk-reward-and-win-rate/"><div class="t">Risk/Reward and Win Rate: The Maths of Staying Profitable</div><div class="d">Why win rate alone doesn&#x27;t make you profitable. How risk/reward ratio and win rate work to…</div></a></div>
+</main>
+<footer class="site"><div class="wrap">
+<p>CoinCalc Lab — Free, accurate crypto calculators for traders.</p>
+<p class="disc">Educational tools only. Nothing here is financial advice. Crypto trading carries
+substantial risk of loss. Figures are estimates; always verify against your exchange before trading.</p>
+<p><a href="/about/">About</a> · <a href="/guides/">Guides</a> · <a href="/sitemap.xml">Sitemap</a></p>
+</div></footer>
+</body>
+</html>

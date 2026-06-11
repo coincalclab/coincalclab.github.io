@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crypto Compound Interest & Staking Calculator | CoinCalc Lab</title>
+<meta name="description" content="Compound interest calculator for crypto staking and savings. Project your earnings from APY, principal, time and compounding frequency.">
+<link rel="canonical" href="https://coincalclab.github.io/compound-interest-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Crypto Compound Interest & Staking Calculator">
+<meta property="og:description" content="Compound interest calculator for crypto staking and savings. Project your earnings from APY, principal, time and compounding frequency.">
+<meta property="og:url" content="https://coincalclab.github.io/compound-interest-calculator/">
+<meta property="og:site_name" content="CoinCalc Lab">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪙</text></svg>">
+<style>
+:root{--bg:#0b0e14;--panel:#141925;--panel2:#1c2333;--line:#273043;
+--text:#e6e9ef;--muted:#9aa4b8;--accent:#4ade80;--accent2:#38bdf8;
+--danger:#f87171;--warn:#fbbf24;--radius:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:var(--bg);color:var(--text);line-height:1.6;font-size:16px}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:920px;margin:0 auto;padding:0 18px}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.85);
+backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:19px;color:var(--text)}
+.logo span{color:var(--accent)}
+nav a{margin-left:18px;color:var(--muted);font-weight:500}
+nav a:hover{color:var(--text);text-decoration:none}
+h1{font-size:30px;line-height:1.2;margin:26px 0 10px}
+h2{font-size:22px;margin:34px 0 12px}
+h3{font-size:18px;margin:22px 0 8px}
+p{color:var(--text)}
+.lead{color:var(--muted);font-size:17px;margin-top:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:22px;margin:22px 0}
+.tool{display:grid;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.row{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600;
+text-transform:uppercase;letter-spacing:.03em}
+input,select{width:100%;padding:11px 12px;background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;color:var(--text);font-size:16px;font-variant-numeric:tabular-nums}
+input:focus,select:focus{outline:none;border-color:var(--accent2)}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px;background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;color:var(--muted);font-weight:600;cursor:pointer;font-size:15px}
+.seg button.on{background:var(--accent2);border-color:var(--accent2);color:#04121f}
+.result{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+border-radius:var(--radius);padding:18px;margin-top:6px}
+.result .big{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line)}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:700;font-variant-numeric:tabular-nums}
+.pos{color:var(--accent)} .neg{color:var(--danger)}
+.muted{color:var(--muted)}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+.faq dt{font-weight:700;margin-top:16px}
+.faq dd{margin:6px 0 0;color:var(--muted)}
+.grid-tools{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.grid-tools{grid-template-columns:1fr}}
+.tcard{display:block;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:18px;transition:border-color .15s,transform .15s}
+.tcard:hover{border-color:var(--accent2);text-decoration:none;transform:translateY(-2px)}
+.tcard .t{font-weight:700;color:var(--text);font-size:17px}
+.tcard .d{color:var(--muted);font-size:14px;margin-top:4px}
+.adslot{margin:22px 0;min-height:1px}
+.cta{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius);
+padding:16px;margin:22px 0}
+.cta a{display:inline-block;margin:6px 8px 0 0;padding:9px 14px;background:var(--accent);
+color:#04121f;border-radius:10px;font-weight:700}
+.cta a:hover{text-decoration:none;opacity:.9}
+.crumbs{font-size:13px;color:var(--muted);margin:18px 0 0}
+footer.site{border-top:1px solid var(--line);margin-top:50px;padding:26px 0;color:var(--muted);font-size:14px}
+footer.site a{color:var(--muted)}
+.disc{font-size:12px;color:var(--muted);margin-top:18px;line-height:1.5}
+</style>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Crypto Compound Interest & Staking Calculator", "description": "Compound interest calculator for crypto staking and savings. Project your earnings from APY, principal, time and compounding frequency.", "url": "https://coincalclab.github.io/compound-interest-calculator/", "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the difference between APR and APY?", "acceptedAnswer": {"@type": "Answer", "text": "APR is the simple annual rate. APY includes the effect of compounding — earning interest on your interest — so for the same APR, more frequent compounding gives a higher APY."}}, {"@type": "Question", "name": "How does compounding frequency change my returns?", "acceptedAnswer": {"@type": "Answer", "text": "More frequent compounding (daily vs yearly) increases the final balance because rewards start earning their own rewards sooner. The effect grows over longer time horizons."}}, {"@type": "Question", "name": "Are crypto staking yields safe?", "acceptedAnswer": {"@type": "Answer", "text": "No yield is risk-free. Staking rewards can change, tokens can be locked for a period, and the token's price can fall further than the yield you earn. Always weigh yield against price risk."}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://coincalclab.github.io/"}, {"@type": "ListItem", "position": 2, "name": "Crypto Compound Interest & Staking Calculator"}]}</script>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="logo" href="/">Coin<span>Calc</span> Lab</a>
+<nav><a href="/">Tools</a><a href="/guides/">Guides</a><a href="/about/">About</a></nav>
+</div></header>
+<main class="wrap">
+<div class="crumbs"><a href="/">Home</a> / <span>Crypto Compound Interest & Staking Calculator</span></div>
+<h1>Compound Interest &amp; Staking Calculator</h1><p class="lead">Project how a staking or savings position grows over time with
+compounding. Enter your principal, the APY and how often interest is paid.</p>
+<script>
+function num(id){var v=parseFloat(document.getElementById(id).value);return isNaN(v)?0:v;}
+function money(x){if(!isFinite(x))return '—';var s=Math.abs(x)>=1?x.toFixed(2):x.toPrecision(4);
+return (x<0?'-$':'$')+Math.abs(parseFloat(s)).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:8});}
+function pct(x){if(!isFinite(x))return '—';return (x>=0?'+':'')+x.toFixed(2)+'%';}
+function cls(x){return x>0?'pos':(x<0?'neg':'');}
+function bind(ids,fn){ids.forEach(function(i){var e=document.getElementById(i);
+if(e){e.addEventListener('input',fn);e.addEventListener('change',fn);}});fn();}
+</script>
+
+<div class="card tool">
+  <div class="row">
+    <div><label>Principal ($)</label><input id="c_p" type="number" value="1000" step="any"></div>
+    <div><label>APY / rate (%)</label><input id="c_r" type="number" value="8" step="any"></div>
+  </div>
+  <div class="row">
+    <div><label>Duration (years)</label><input id="c_t" type="number" value="3" step="any"></div>
+    <div><label>Compounding</label>
+      <select id="c_n">
+        <option value="365">Daily</option>
+        <option value="52">Weekly</option>
+        <option value="12" selected>Monthly</option>
+        <option value="4">Quarterly</option>
+        <option value="1">Yearly</option>
+      </select>
+    </div>
+  </div>
+  <div class="result">
+    <div class="muted" style="font-size:13px">Final balance</div>
+    <div class="big" id="c_final">—</div>
+    <div class="kv"><span class="k">Total interest earned</span><span class="v pos" id="c_int">—</span></div>
+    <div class="kv"><span class="k">Effective growth</span><span class="v" id="c_grow">—</span></div>
+  </div>
+  <p class="note">Assumes the rate stays constant and rewards are re-staked. Real crypto yields vary
+  and token prices can fall — a high APY does not protect against price risk.</p>
+</div>
+<script>
+function calcComp(){
+  var p=num('c_p'),r=num('c_r')/100,t=num('c_t'),n=parseFloat(document.getElementById('c_n').value);
+  if(p<=0||n<=0){return;}
+  var amount=p*Math.pow(1+r/n,n*t);
+  var interest=amount-p;
+  document.getElementById('c_final').textContent=money(amount);
+  document.getElementById('c_int').textContent=money(interest);
+  document.getElementById('c_grow').textContent=pct(p>0?interest/p*100:0);
+}
+bind(['c_p','c_r','c_t','c_n'],calcComp);
+</script>
+<h2>Frequently asked questions</h2><dl class="faq"><dt>What is the difference between APR and APY?</dt><dd>APR is the simple annual rate. APY includes the effect of compounding — earning interest on your interest — so for the same APR, more frequent compounding gives a higher APY.</dd><dt>How does compounding frequency change my returns?</dt><dd>More frequent compounding (daily vs yearly) increases the final balance because rewards start earning their own rewards sooner. The effect grows over longer time horizons.</dd><dt>Are crypto staking yields safe?</dt><dd>No yield is risk-free. Staking rewards can change, tokens can be locked for a period, and the token's price can fall further than the yield you earn. Always weigh yield against price risk.</dd></dl><h2>Related calculators</h2><div class="grid-tools"><a class="tcard" href="/dca-calculator/"><div class="t">DCA Calculator (Dollar-Cost Averaging)</div><div class="d">Dollar-cost averaging calculator. Add each crypto buy to get your average entry price, tot…</div></a><a class="tcard" href="/crypto-profit-calculator/"><div class="t">Crypto Profit Calculator</div><div class="d">Free crypto profit calculator. Enter buy price, sell price and fees to instantly see your …</div></a></div><h2>Related guides</h2><div class="grid-tools"><a class="tcard" href="/guides/dca-vs-lump-sum-crypto/"><div class="t">DCA vs Lump Sum Investing in Crypto: Which Is Better?</div><div class="d">Dollar-cost averaging versus lump-sum investing in crypto — the maths, the psychology, wha…</div></a></div>
+</main>
+<footer class="site"><div class="wrap">
+<p>CoinCalc Lab — Free, accurate crypto calculators for traders.</p>
+<p class="disc">Educational tools only. Nothing here is financial advice. Crypto trading carries
+substantial risk of loss. Figures are estimates; always verify against your exchange before trading.</p>
+<p><a href="/about/">About</a> · <a href="/guides/">Guides</a> · <a href="/sitemap.xml">Sitemap</a></p>
+</div></footer>
+</body>
+</html>
